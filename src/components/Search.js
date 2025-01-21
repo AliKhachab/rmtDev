@@ -2,7 +2,8 @@ import {
     searchInputEl,
     searchFormEl,
     jobListSearchEl,
-    numberEl
+    numberEl,
+    BASE_API_URL
 } from '../common.js';
 import renderError from './Error.js';
 import renderSpinner from './Spinner.js';
@@ -24,7 +25,7 @@ const submitHandler = event => {
     jobListSearchEl.innerHTML = '';
     renderSpinner('search');
 
-    fetch(`https://bytegrad.com/course-assets/js/2/api/jobs?search=${searchText}`)
+    fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
         .then(response => {
             if (!response.ok) {
                 console.log("Error in grabbing jobs info");
