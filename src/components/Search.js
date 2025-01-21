@@ -1,10 +1,12 @@
 import {
     searchInputEl,
     searchFormEl,
-    spinnerSearchEl,
     jobListSearchEl,
     numberEl
 } from '../common.js';
+import renderError from './Error.js';
+import renderSpinner from './Spinner.js';
+
 const submitHandler = event => {
     event.preventDefault(); // prevent reload on submit
 
@@ -14,15 +16,13 @@ const submitHandler = event => {
     const forbiddenPattern = /[0-9]/;
     const patternMatch = forbiddenPattern.test(searchText);
     if (patternMatch) {
-        errorTextEl.textContent = 'Your search may not contain numbers';
-        errorEl.classList.add('error--visible');
-        setTimeout(() => { errorEl.classList.remove('error--visible') }, 3500);
+        renderError('Numbers are not allowed in the search field.');
         return;
     }
 
     searchInputEl.blur(); // nunfocus search bar, remove previous job items, and spinner appears
     jobListSearchEl.innerHTML = '';
-    spinnerSearchEl.classList.add('spinner--visible');
+    renderSpinner('search');
 
     fetch(`https://bytegrad.com/course-assets/js/2/api/jobs?search=${searchText}`)
         .then(response => {
@@ -35,7 +35,7 @@ const submitHandler = event => {
         .then(data => {
             // extract useful data and display everything accordingly
             const { jobItems } = data;
-            spinnerSearchEl.classList.remove("spinner--visible");
+            renderSpinner('search');
             numberEl.textContent = jobItems.length;
             jobItems.slice(0,7).forEach(jobItem => {
                 const newJobItemHTML = 

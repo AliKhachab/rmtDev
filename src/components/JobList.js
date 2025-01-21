@@ -1,8 +1,8 @@
 import {
     jobListSearchEl,
-    spinnerJobDetailsEl,
     jobDetailsContentEl
 } from '../common.js';
+import renderSpinner from './Spinner.js';
 
 const clickHandler = event => {
     event.preventDefault(); // prevent reload on event
@@ -12,7 +12,7 @@ const clickHandler = event => {
     jobItemEl.classList.add('job-item--active');
 
     jobDetailsContentEl.innerHTML = '';
-    spinnerJobDetailsEl.classList.add('spinner--visible');
+    renderSpinner('jobDetails');
 
     const id = jobItemEl.children[0].getAttribute('href'); // update link
     fetch(`https://bytegrad.com/course-assets/js/2/api/jobs/${id}`)
@@ -25,7 +25,7 @@ const clickHandler = event => {
     })
     .then(data => {
         const { jobItem } = data;
-        spinnerJobDetailsEl.classList.remove('spinner--visible');
+        renderSpinner('jobDetails');
         
         // render job details
         const jobDetailsHTML = 
