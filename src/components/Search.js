@@ -9,7 +9,7 @@ import renderError from './Error.js';
 import renderJobList from './JobList.js';
 import renderSpinner from './Spinner.js';
 
-const submitHandler = event => {
+const submitHandler = async event => {
     event.preventDefault(); // prevent reload on submit
 
     const searchText = searchInputEl.value;
@@ -25,25 +25,24 @@ const submitHandler = event => {
     searchInputEl.blur(); // nunfocus search bar, remove previous job items, and spinner appears
     jobListSearchEl.innerHTML = '';
     renderSpinner('search');
+    try {
+        const response = await fetch(`${BASE_API_URL}/jobs?search=${searchText}`);
+        const data = await response.json();
 
-    fetch(`${BASE_API_URL}/jobs?search=${searchText}`)
-        .then(response => {
-            if (!response.ok) {
-                console.log("Error in grabbing jobs info");
-                return;
-            }
-            return response.json();
-        })
-        .then(data => {
-            // extract useful data and display everything accordingly
-            const { jobItems } = data;
-            renderSpinner('search');
-            numberEl.textContent = jobItems.length;
-            renderJobList(jobItems);
-        })
-        .catch(error => {
-            console.log(error);
-        }); // sample jobs fetch call
+        if (!response.ok) { 
+            throw new Error(data.description);
+        }
+
+        // extract useful data and display everything accordingly
+        const { jobItems } = data;
+        renderSpinner('search');
+        numberEl.textContent = jobItems.length;
+        renderJobList(jobItems);
+    } catch (error) {
+        renderSpinner('search');
+        renderError(error.message);
+    }
+
 };
 
 searchFormEl.addEventListener('submit', submitHandler);

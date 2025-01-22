@@ -3,6 +3,7 @@ import {
     jobDetailsContentEl,
     BASE_API_URL
 } from '../common.js';
+import renderError from './Error.js';
 import renderJobDetails from './JobDetails.js';
 import renderSpinner from './Spinner.js';
 
@@ -33,7 +34,7 @@ const renderJobList = jobItems => {
     });
 };
 
-const clickHandler = event => {
+const clickHandler = async event => {
     event.preventDefault(); // prevent reload on event
 
     const jobItemEl = event.target.closest('.job-item'); // find the clicked job item and highlight it, remove previous highlight if any
@@ -44,24 +45,22 @@ const clickHandler = event => {
     renderSpinner('jobDetails');
 
     const id = jobItemEl.children[0].getAttribute('href'); // update link
-    fetch(`${BASE_API_URL}/jobs/${id}`)
-    .then(res => {
-        if (!res.ok) {
-            console.log("job not ok");
-            return;
+    try { 
+        const response = await fetch(`${BASE_API_URL}/jobs/${id}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.description);
         }
-        return res.json();
-    })
-    .then(data => {
+
         const { jobItem } = data;
         renderSpinner('jobDetails');
-        
-        // render job details
         renderJobDetails(jobItem);
-    })
-    .catch(error => console.log(error));
 
-
+    } catch (error) {
+        renderSpinner('jobDetails');
+        renderError(error.message);
+    }
 }
 jobListSearchEl.addEventListener('click', clickHandler);
 
