@@ -2,14 +2,15 @@ import {
     jobListSearchEl,
     jobDetailsContentEl,
     BASE_API_URL,
-    getData
+    getData,
+    state
 } from '../common.js';
 import renderError from './Error.js';
 import renderJobDetails from './JobDetails.js';
 import renderSpinner from './Spinner.js';
 
-const renderJobList = jobItems => {
-    jobItems.slice(0,7).forEach(jobItem => {
+const renderJobList = () => {
+    state.searchJobItems.slice(0,7).forEach(jobItem => {
         const newJobItemHTML = 
         `
         <li class="job-item">
