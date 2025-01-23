@@ -12,8 +12,8 @@ import renderSpinner from './Spinner.js';
 const renderJobList = () => {
     // remove previous job items
     jobListSearchEl.innerHTML = '';
-    
-    state.searchJobItems.slice(0,7).forEach(jobItem => {
+
+    state.searchJobItems.slice((7 * state.currentPage) - 7, state.currentPage * 7).forEach(jobItem => {
         const newJobItemHTML = 
         `
         <li class="job-item">
