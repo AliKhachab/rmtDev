@@ -3,7 +3,8 @@ import {
     jobDetailsContentEl,
     BASE_API_URL,
     getData,
-    state
+    state,
+    RESULTS_PER_PAGE
 } from '../common.js';
 import renderError from './Error.js';
 import renderJobDetails from './JobDetails.js';
@@ -13,7 +14,7 @@ const renderJobList = () => {
     // remove previous job items
     jobListSearchEl.innerHTML = '';
 
-    state.searchJobItems.slice((7 * state.currentPage) - 7, state.currentPage * 7).forEach(jobItem => {
+    state.searchJobItems.slice((RESULTS_PER_PAGE * state.currentPage) - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(jobItem => {
         const newJobItemHTML = 
         `
         <li class="job-item">

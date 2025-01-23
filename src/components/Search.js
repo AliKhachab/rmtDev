@@ -5,11 +5,14 @@ import {
     numberEl,
     BASE_API_URL,
     getData,
-    state
+    state,
+    sortingBtnRecentEl,
+    sortingBtnRelevantEl
 } from '../common.js';
 import renderError from './Error.js';
 import renderJobList from './JobList.js';
 import renderSpinner from './Spinner.js';
+import renderPaginationButtons from './Pagination.js';
 
 const submitHandler = async event => {
     event.preventDefault(); // prevent reload on submit
@@ -26,6 +29,7 @@ const submitHandler = async event => {
 
     searchInputEl.blur(); // nunfocus search bar, remove previous job items, and spinner appears
     jobListSearchEl.innerHTML = '';
+
     renderSpinner('search');
     try {
         const data = await getData(`${BASE_API_URL}/jobs?search=${searchText}`);
@@ -34,14 +38,18 @@ const submitHandler = async event => {
         const { jobItems } = data;
 
         state.searchJobItems = jobItems;
+        state.currentPage = 1;
 
         renderSpinner('search');
         numberEl.textContent = jobItems.length;
+        renderPaginationButtons();
         renderJobList();
     } catch (error) {
         renderSpinner('search');
         renderError(error.message);
     }
+    // reset sorting buttons
+    sortingBtnRelevantEl.click();
 
 };
 

@@ -5,6 +5,7 @@ import {
     state
 } from '../common.js';
 import renderJobList from './JobList.js';
+import renderPaginationButtons from './Pagination.js';
 
 const clickHandler = event => {
     const clickedButtonEl = event.target.closest('.sorting__button');
@@ -23,14 +24,16 @@ const clickHandler = event => {
         state.searchJobItems.sort((a, b) => {
             return a.daysAgo - b.daysAgo;
         });
+        state.currentPage = 1;
     } else {
         sortingBtnRecentEl.classList.remove('sorting__button--active'); // inverse of the above
         sortingBtnRelevantEl.classList.add('sorting__button--active');
         state.searchJobItems.sort((a, b) => {
             return b.relevanceScore - a.relevanceScore;
         });
+        state.currentPage = 1;
     }
-
+    renderPaginationButtons();
     renderJobList();
 };
 sortingEl.addEventListener('click', clickHandler);
