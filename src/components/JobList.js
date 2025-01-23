@@ -51,6 +51,9 @@ const clickHandler = async event => {
     renderSpinner('jobDetails');
 
     const id = jobItemEl.children[0].getAttribute('href'); // update link
+
+    history.pushState(null, '', `/#${id}`);
+
     try { 
         const data = await getData(`${BASE_API_URL}/jobs/${id}`);
 
