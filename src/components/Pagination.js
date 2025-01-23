@@ -37,7 +37,6 @@ const clickHandler = (event) => {
     if (!clickedButtonEl) return;
 
     const nextPage = clickedButtonEl.className.includes('--next') ? true : false;
-    console.log(clickedButtonEl);
     nextPage ? state.currentPage++ : state.currentPage--;
 
     renderPaginationButtons();

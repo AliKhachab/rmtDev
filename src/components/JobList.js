@@ -17,7 +17,7 @@ const renderJobList = () => {
     state.searchJobItems.slice((RESULTS_PER_PAGE * state.currentPage) - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(jobItem => {
         const newJobItemHTML = 
         `
-        <li class="job-item">
+        <li class="job-item ${state.activeJobItem.id === +jobItem.id ? 'job-item--active' : ''}">
             <a class="job-item__link" href="${jobItem.id}">
                 <div class="job-item__badge">${jobItem.badgeLetters}</div>
                 <div class="job-item__middle">
@@ -51,6 +51,8 @@ const clickHandler = async event => {
     renderSpinner('jobDetails');
 
     const id = jobItemEl.children[0].getAttribute('href'); // update link
+    
+    state.activeJobItem = state.searchJobItems.find(jobItem => jobItem.id === +id);
 
     history.pushState(null, '', `/#${id}`);
 
