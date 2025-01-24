@@ -5,12 +5,13 @@ import {
     state
 } from '../common.js';
 import renderJobDetails from './JobDetails.js';
+import renderJobList from './JobList.js';
 import renderSpinner from './Spinner.js';
 import renderError from './Error.js';
 
 const loadHashChangeHandler = async () => {
     const id = window.location.hash.substring(1); // take the id from the link after the #
-
+    document.querySelectorAll('.job-item--active').forEach(activeJobItems => activeJobItems.classList.remove('job-item--active'));
     if (id) { // if there is an id (i.e. if the link is just localhost://#, id = null or '', otherwise it has a number)
         jobDetailsContentEl.innerHTML = '';
         renderSpinner('jobDetails');
@@ -20,6 +21,8 @@ const loadHashChangeHandler = async () => {
     
             const { jobItem } = data;
             state.activeJobItem = jobItem;
+            
+            renderJobList(); // this covers the case of back and forward arrows on the top left changing the currently viewed job item
 
             renderSpinner('jobDetails');
             renderJobDetails(jobItem);

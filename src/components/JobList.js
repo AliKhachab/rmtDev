@@ -42,7 +42,7 @@ const renderJobList = (whichJobList = 'search') => {
                     </div>
                 </div>
                 <div class="job-item__right">
-                    <i class="fa-solid fa-bookmark job-item__bookmark-icon"></i>
+                    <i class="fa-solid fa-bookmark job-item__bookmark-icon ${state.bookmarkJobItems.some(bookmarkJobItem => bookmarkJobItem.id === jobItem.id) &&'job-item__bookmark-icon--bookmarked'}"></i>
                     <time class="job-item__time">${jobItem.daysAgo}d</time>
                 </div>
             </a>
@@ -57,7 +57,6 @@ const clickHandler = async event => {
 
     const jobItemEl = event.target.closest('.job-item'); // find the clicked job item and highlight it, remove previous highlight if any
     document.querySelectorAll('.job-item--active').forEach(activeJobItems => activeJobItems.classList.remove('job-item--active'));
-    jobItemEl.classList.add('job-item--active');
 
     jobDetailsContentEl.innerHTML = '';
     renderSpinner('jobDetails');
@@ -67,6 +66,8 @@ const clickHandler = async event => {
     const allJobItems = [...state.searchJobItems, ...state.bookmarkJobItems];
     console.log(allJobItems);
     state.activeJobItem = allJobItems.find(jobItem => jobItem.id === +id);
+
+    renderJobList();
 
     history.pushState(null, '', `/#${id}`);
 

@@ -16,6 +16,7 @@ const clickHandler = event => {
     }
     localStorage.setItem('bookmarkJobItems', JSON.stringify(state.bookmarkJobItems));
     document.querySelector('.job-info__bookmark-icon').classList.toggle('job-info__bookmark-icon--bookmarked');
+    renderJobList();
 };
 
 
