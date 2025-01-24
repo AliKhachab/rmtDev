@@ -4,17 +4,29 @@ import {
     BASE_API_URL,
     getData,
     state,
+    jobListBookmarksEl,
     RESULTS_PER_PAGE
 } from '../common.js';
 import renderError from './Error.js';
 import renderJobDetails from './JobDetails.js';
 import renderSpinner from './Spinner.js';
 
-const renderJobList = () => {
-    // remove previous job items
-    jobListSearchEl.innerHTML = '';
+const renderJobList = (whichJobList = 'search') => {
+    const jobListEl = whichJobList === 'search' ? jobListSearchEl : jobListBookmarksEl;
 
-    state.searchJobItems.slice((RESULTS_PER_PAGE * state.currentPage) - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE).forEach(jobItem => {
+    // remove previous job items
+    jobListEl.innerHTML = '';
+
+    let jobItems;
+    if (whichJobList === 'search') {
+        jobItems = state.searchJobItems.slice((RESULTS_PER_PAGE * state.currentPage) - RESULTS_PER_PAGE, state.currentPage * RESULTS_PER_PAGE);
+    } else if (whichJobList === 'bookmarks') {
+        jobItems = state.bookmarkJobItems;
+    } else {
+        throw new Error('Invalid job list type');
+    }
+
+    jobItems.forEach(jobItem => {
         const newJobItemHTML = 
         `
         <li class="job-item ${state.activeJobItem.id === +jobItem.id ? 'job-item--active' : ''}">
@@ -36,7 +48,7 @@ const renderJobList = () => {
             </a>
         </li>
         `;
-        jobListSearchEl.insertAdjacentHTML('beforeend', newJobItemHTML);
+        jobListEl.insertAdjacentHTML('beforeend', newJobItemHTML);
     });
 };
 
@@ -44,7 +56,7 @@ const clickHandler = async event => {
     event.preventDefault(); // prevent reload on event
 
     const jobItemEl = event.target.closest('.job-item'); // find the clicked job item and highlight it, remove previous highlight if any
-    document.querySelector('.job-item--active')?.classList.remove('job-item--active');
+    document.querySelectorAll('.job-item--active').forEach(activeJobItems => activeJobItems.classList.remove('job-item--active'));
     jobItemEl.classList.add('job-item--active');
 
     jobDetailsContentEl.innerHTML = '';
@@ -52,7 +64,8 @@ const clickHandler = async event => {
 
     const id = jobItemEl.children[0].getAttribute('href'); // update link
     
-    state.activeJobItem = state.searchJobItems.find(jobItem => jobItem.id === +id);
+    const allJobItems = [...state.searchJobItems, ...state.bookmarkJobItems];
+    state.activeJobItem = allJobItems.find(jobItem => jobItem.id === +id);
 
     history.pushState(null, '', `/#${id}`);
 
@@ -69,5 +82,7 @@ const clickHandler = async event => {
     }
 }
 jobListSearchEl.addEventListener('click', clickHandler);
+jobListBookmarksEl.addEventListener('click', clickHandler);
+
 
 export default renderJobList;
