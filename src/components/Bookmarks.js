@@ -16,7 +16,6 @@ const clickHandler = event => {
     }
     localStorage.setItem('bookmarkJobItems', JSON.stringify(state.bookmarkJobItems));
     document.querySelector('.job-info__bookmark-icon').classList.toggle('job-info__bookmark-icon--bookmarked');
-    renderJobList('bookmarks');
 };
 
 
@@ -24,6 +23,8 @@ const mouseEnterHandler = () => {
     //show bookmarks when hovered over
     bookmarksBtnEl.classList.add('bookmarks-btn--active');
     jobListBookmarksEl.classList.add('job-list--visible');
+    renderJobList('bookmarks'); // had to move renderJobList('bookmarks') here because it was not rendering the bookmarks when the mouse hovered over the bookmarks button.
+    // This was most likely due to the DOM not fully loading prior to the function being called.
 };
 
 const mouseLeaveHandler = () => {
